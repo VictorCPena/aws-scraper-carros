@@ -1,0 +1,7 @@
+pandas
+selenium
+boto3
+scikit-learn
+matplotlib
+seaborn
+python-dotenv
