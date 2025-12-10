@@ -1,68 +1,90 @@
 import time
 import random
 import pandas as pd
-from datetime import datetime
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from webdriver_manager.chrome import ChromeDriverManager
+from storage import CloudStorage
+import re
 
-def get_driver():
-    """Configura o Chrome de forma híbrida (Local ou Serverless)"""
+def configurar_driver():
     chrome_options = Options()
+    chrome_options.add_argument("--headless=new")
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-dev-shm-usage")
+    chrome_options.add_argument("--disable-gpu")
+    chrome_options.add_argument("--window-size=1920,1080")
+    chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
     
-    # Se quiser ver o navegador abrindo, mude para False
-    chrome_options.add_argument('--headless') 
-    chrome_options.add_argument('--no-sandbox')
-    chrome_options.add_argument('--disable-dev-shm-usage')
-
-    # Instala o driver automaticamente (Mágica para rodar local)
-    servico = Service(ChromeDriverManager().install())
-    driver = webdriver.Chrome(service=servico, options=chrome_options)
+    driver = webdriver.Chrome(options=chrome_options)
     return driver
 
-def executar_scraping(qtd_paginas=1):
-    driver = get_driver()
-    dados = []
+def limpar_dados(df):
     
-    print(f"--- Iniciando Scraping de {qtd_paginas} páginas ---")
+    df['Preço'] = df['Preço'].astype(str).str.replace('R$', '', regex=False).str.replace('.', '', regex=False).str.replace(',', '.', regex=False)
+    df['Preço'] = pd.to_numeric(df['Preço'], errors='coerce')
+
+    df['KM Rodado'] = df['KM Rodado'].astype(str).str.replace('Km', '', regex=False).str.replace('.', '', regex=False)
+    df['KM Rodado'] = pd.to_numeric(df['KM Rodado'], errors='coerce').fillna(0).astype(int)
+
+    df[['Cidade', 'Estado']] = df['Local'].astype(str).str.split(', ', n=1, expand=True)
     
+    df['Ano'] = df['Ano'].astype(str).str.split('/').str[0].astype(int)
+
+    df['Transmissão'] = df['Descrição'].apply(
+        lambda x: 'Automático' if 'aut' in str(x).lower() or 'at' in str(x).lower() else 'Manual'
+    )
+    
+    return df
+
+def executar_scraping(paginas=5):
+    driver = configurar_driver()
+    dados_brutos = []
+
     try:
-        # URL EXMEPLO (ICarros)
-        base_url = "https://www.icarros.com.br/ache/listaanuncios.jsp?pag={}&ord=35"
-        
-        for i in range(1, qtd_paginas + 1):
-            url = base_url.format(i)
-            print(f"Lendo URL: {url}")
+        for pag in range(1, paginas + 1):
+            url = f'https://www.icarros.com.br/ache/listaanuncios.jsp?pag={pag}&ord=35'
             driver.get(url)
-            time.sleep(2) # Espera carregar
-            
-            # --- SUA LÓGICA DE COLETA AQUI ---
-            # Exemplo genérico pegando qualquer card
-            elementos = driver.find_elements(By.CLASS_NAME, 'card-offer__main-content')
-            
-            for elem in elementos:
-                try:
-                    texto = elem.text.split('\n')
-                    if len(texto) > 2:
-                        dados.append({
-                            'titulo': texto[0],
-                            'preco': texto[2],
-                            'data_coleta': datetime.now().strftime('%Y-%m-%d')
-                        })
-                except:
-                    pass
-            
-            # Scroll simples
+            time.sleep(random.uniform(2, 4)) 
+
             body = driver.find_element(By.TAG_NAME, "body")
-            body.send_keys(Keys.PAGE_DOWN)
-            time.sleep(1)
+            for _ in range(3):
+                body.send_keys(Keys.PAGE_DOWN)
+                time.sleep(0.5)
+
+            elementos = driver.find_elements(By.CLASS_NAME, 'card-offer__main-content')
+
+            for elemento in elementos:
+                try:
+                    textos = elemento.text.split('\n')
+                    if len(textos) >= 6:
+                        dados_brutos.append({
+                            'Título': textos[0],
+                            'Descrição': textos[1],
+                            'Preço': textos[2],
+                            'Local': textos[4],
+                            'Ano': textos[5],
+                            'KM Rodado': textos[6]
+                        })
+                except Exception:
+                    continue
             
+            print(f"Página {pag}: {len(elementos)} itens.")
+
     except Exception as e:
-        print(f"Erro durante scraping: {e}")
+        print(f"❌ Erro: {e}")
     finally:
         driver.quit()
-        
-    return pd.DataFrame(dados)
+
+    if not dados_brutos:
+        return
+
+    df = pd.DataFrame(dados_brutos)
+    df_limpo = limpar_dados(df)
+
+    storage = CloudStorage()
+    storage.salvar(df_limpo, 'carros_dados_limpos.csv')
+
+if __name__ == "__main__":
+    executar_scraping(paginas=2)

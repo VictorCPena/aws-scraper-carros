@@ -1,6 +1,6 @@
 import os
 import boto3
-from io import StringIO, BytesIO
+from io import StringIO
 import pandas as pd
 from dotenv import load_dotenv
 
@@ -10,7 +10,7 @@ class CloudStorage:
     def __init__(self):
         self.env = os.environ.get('AMBIENTE', 'LOCAL')
         self.bucket_name = os.environ.get('BUCKET_NAME', 'bucket-teste')
-        self.local_path = 'data' 
+        self.local_path = 'data'
         
         if self.env == 'PROD':
             self.s3_client = boto3.client(
@@ -24,7 +24,6 @@ class CloudStorage:
                 os.makedirs(self.local_path)
 
     def salvar(self, df, nome_arquivo):
-        """Salva DF no S3 (Prod) ou na pasta data/ (Local)"""
         try:
             if self.env == 'PROD':
                 csv_buffer = StringIO()
@@ -43,14 +42,11 @@ class CloudStorage:
             print(f"❌ Erro ao salvar: {e}")
 
     def ler_csv(self, nome_arquivo):
-        """Lê CSV do S3 (Prod) ou da pasta data/ (Local)"""
         try:
             if self.env == 'PROD':
-                print(f"☁️ Baixando do S3: {nome_arquivo}...")
                 obj = self.s3_client.get_object(Bucket=self.bucket_name, Key=nome_arquivo)
                 return pd.read_csv(obj['Body'])
             else:
-                print(f"📂 Lendo do disco local: {nome_arquivo}...")
                 caminho = os.path.join(self.local_path, nome_arquivo)
                 if os.path.exists(caminho):
                     return pd.read_csv(caminho)
