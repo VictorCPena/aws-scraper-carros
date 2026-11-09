@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "batch_id": "51ad10077b1893eb7a261c728ebb9aa9e817e5e29d84d7a3a60c8dc46f6dcba5",
+  "source": "synthetic",
+  "captured": 15,
+  "accepted": 12,
+  "rejected": 2,
+  "duplicates": 1,
+  "missing_mileage": 1,
+  "artifacts_sha256": {
+    "raw.json": "028875426c00d3d8d856d304621e2513a440f68e4ddd8c90af98924b353cc8f2",
+    "curated.csv": "f63b0cd9318da20950c9e94a769694a9af34e667244559455436aa96ac6d434d",
+    "rejected.json": "ed223aa181bc6b5428813262daf36efc2deb079b96b58522c89a71d260807297"
+  }
+}

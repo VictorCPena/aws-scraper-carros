@@ -28,3 +28,8 @@ geckodriver/
 
 .DS_Store
 Thumbs.db
+.pytest_cache/
+.ruff_cache/
+.env.*
+!.env.example
+work/
