@@ -1,0 +1,65 @@
+{
+  "source": "synthetic",
+  "cards": [
+    {
+      "page": 1,
+      "text": "Fiat Argo\n1.0 manual\nR$ 55.990,90\nDetalhes\nFortaleza, CE\n2020/2021\n61.500 Km"
+    },
+    {
+      "page": 1,
+      "text": "Honda Fit\n1.5 CVT\nR$ 74.900\nDetalhes\nRecife - PE\n2018/2019\n84.200 km"
+    },
+    {
+      "page": 1,
+      "text": "Renault Kwid\n1.0 Zen\nR$ 43.500\nDetalhes\nFortaleza, CE\n2021"
+    },
+    {
+      "page": 1,
+      "text": "Toyota Corolla\n2.0 automático\nR$ 104.990\nDetalhes\nSalvador, BA\n2019/2020\n65.400 Km"
+    },
+    {
+      "page": 1,
+      "text": "VW Gol\n1.6 manual\nR$ 49.950\nDetalhes\nNatal, RN\n2019\n93.100 Km"
+    },
+    {
+      "page": 1,
+      "text": "Hyundai HB20\n1.0 TGDI AT\nR$ 76.500\nDetalhes\nSão Paulo, SP\n2021/2022\n34.520 Km"
+    },
+    {
+      "page": 1,
+      "text": "Fiat Cronos\n1.3 manual\nR$ 62.300\nDetalhes\nCampinas, SP\n2020/2021\n53.720 Km"
+    },
+    {
+      "page": 2,
+      "text": "Nissan Kicks\n1.6 CVT\nR$ 87.100\nDetalhes\nCuritiba, PR\n2020/2021\n59.400 Km"
+    },
+    {
+      "page": 2,
+      "text": "Chevrolet Onix\n1.0 turbo AT\nR$ 72.990\nDetalhes\nFortaleza, CE\n2021\n44.500 Km"
+    },
+    {
+      "page": 2,
+      "text": "Ford Ka\n1.0 manual\nR$ 45.450\nDetalhes\nJoão Pessoa, PB\n2020\n76.200 Km"
+    },
+    {
+      "page": 2,
+      "text": "Jeep Renegade\n1.8 automático\nR$ 83.000\nDetalhes\nTeresina, PI\n2018/2019\n88.990 Km"
+    },
+    {
+      "page": 2,
+      "text": "Peugeot 208\n1.6 automático\nR$ 68.950\nDetalhes\nRio de Janeiro, RJ\n2022\n36.500 Km"
+    },
+    {
+      "page": 2,
+      "text": "Fiat Argo\n1.0 manual\nR$ 55.990,90\nDetalhes\nFortaleza, CE\n2020/2021\n61.500 Km"
+    },
+    {
+      "page": 2,
+      "text": "Carro sem preço\n1.0 manual\nConsulte\nFortaleza, CE\n2020\n20.000 Km"
+    },
+    {
+      "page": 2,
+      "text": "Carro fora da regra\n1.6 AT\nR$ 50.000\nFortaleza, XX\n2018\n32.000 Km"
+    }
+  ]
+}
